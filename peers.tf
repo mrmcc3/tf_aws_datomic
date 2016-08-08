@@ -12,15 +12,6 @@ resource "aws_iam_role" "peer" {
 EOF
 }
 
-# can use outside of module for additional policies
-output "peer_iam_role" {
-  value = "${aws_iam_role.peer.id}"
-}
-
-output "peer_iam_role_arn" {
-  value = "${aws_iam_role.peer.arn}"
-}
-
 # this policy allows read access to the dynamo table
 resource "aws_iam_role_policy" "peer_dynamo_access" {
   name = "dynamo_access"
@@ -97,7 +88,15 @@ resource "aws_autoscaling_group" "peers" {
   launch_configuration = "${aws_launch_configuration.peer.name}"
 }
 
-# can be used outside of module as codedeploy target
+# outputs
 output "peer_autoscaling_group" {
   value = "${aws_autoscaling_group.peers.name}"
+}
+
+output "peer_iam_role" {
+  value = "${aws_iam_role.peer.id}"
+}
+
+output "peer_iam_role_arn" {
+  value = "${aws_iam_role.peer.arn}"
 }
