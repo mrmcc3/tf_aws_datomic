@@ -1,4 +1,4 @@
-# Datomic terraform module
+## Datomic terraform module
 
 NOTE: this module is meant as an example to show how you can setup a 
 basic [Datomic](http://www.datomic.com/) system on AWS using 
@@ -39,3 +39,9 @@ module "datomic" {
   dynamo_write_capacity = 10
 }
 ```
+
+### known issues
+
+If you get the following: `Error creating launch configuration: ValidationError` it seems to be a
+terraform [issue](https://github.com/hashicorp/terraform/issues/7198). Workaround is to run
+`terraform apply` a second time.
