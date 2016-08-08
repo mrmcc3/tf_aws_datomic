@@ -42,6 +42,7 @@ EOF
 # s3 bucket for the transactor logs
 resource "aws_s3_bucket" "transactor_logs" {
   bucket = "${var.system_name}-transactor-logs"
+  force_destroy = true
 
   lifecycle {
     # prevent_destroy = true
