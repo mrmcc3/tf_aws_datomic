@@ -10,6 +10,6 @@ resource "aws_dynamodb_table" "datomic" {
   }
 
   lifecycle {
-    prevent_destroy = true
+    # prevent_destroy = true
   }
 }

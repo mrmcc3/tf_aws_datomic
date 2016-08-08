@@ -44,7 +44,7 @@ resource "aws_s3_bucket" "transactor_logs" {
   bucket = "${var.system_name}-transactor-logs"
 
   lifecycle {
-    prevent_destroy = true
+    # prevent_destroy = true
   }
 }
 
