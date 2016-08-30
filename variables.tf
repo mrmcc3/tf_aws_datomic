@@ -28,16 +28,16 @@ variable "peers" {
   default = "1"
 }
 
-variable "transactor_ami" {
-  default = "ami-c942d9f3" # datomic ami (ap-southeast-2)
-}
-
 variable "transactor_availability_zones" {
   default = ["ap-southeast-2a", "ap-southeast-2b", "ap-southeast-2c"]
 }
 
 variable "transactor_instance_type" {
   default = "c3.large"
+}
+
+variable "transactor_instance_virtualization_type" {
+  default = "hvm"
 }
 
 variable "transactors" {

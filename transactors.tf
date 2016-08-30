@@ -86,10 +86,26 @@ resource "aws_security_group" "datomic" {
   }
 }
 
+# transactor ami
+data "aws_ami" "transactor" {
+  most_recent = true
+  owners      = ["754685078599"]
+
+  filter {
+    name   = "name"
+    values = ["datomic-transactor-*"]
+  }
+
+  filter {
+    name   = "virtualization-type"
+    values = ["${var.transactor_instance_virtualization_type}"]
+  }
+}
+
 # transactor launch config
 resource "aws_launch_configuration" "transactor" {
   name_prefix          = "${var.system_name}-transactor-"
-  image_id             = "${var.transactor_ami}"
+  image_id             = "${data.aws_ami.transactor.id}"
   instance_type        = "${var.transactor_instance_type}"
   iam_instance_profile = "${aws_iam_instance_profile.transactor.name}"
   security_groups      = ["${aws_security_group.datomic.name}"]
