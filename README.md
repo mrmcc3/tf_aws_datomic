@@ -25,7 +25,6 @@ module "datomic" {
   peer_ssh_key            = "..."
 
   transactors                       = 1
-  transactor_ami                    = "ami-c942d9f3"
   transactor_instance_type          = "c3.large"
   transactor_availability_zones     = ["ap-southeast-2a", "ap-southeast-2b", "ap-southeast-2c"]
   transactor_memory_index_max       = "512m"
