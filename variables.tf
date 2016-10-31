@@ -27,6 +27,12 @@ variable "peer_instance_type" {
 variable "peers" {
   default = "1"
 }
+variable "wget_user" {
+
+}
+variable "wget_pass" {
+ 
+}
 
 variable "transactor_availability_zones" {
   default = ["ap-southeast-2a", "ap-southeast-2b", "ap-southeast-2c"]
