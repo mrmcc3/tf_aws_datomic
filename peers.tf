@@ -71,11 +71,34 @@ resource "aws_launch_configuration" "peer" {
   instance_type        = "${var.peer_instance_type}"
   iam_instance_profile = "${aws_iam_instance_profile.peer.name}"
   security_groups      = ["${aws_security_group.ssh.name}", "${aws_security_group.datomic.name}"]
-  user_data            = "${file("${path.module}/scripts/bootstrap-peer.sh")}"
+  user_data            = "${data.template_file.peer_user_data.rendered}"
   key_name             = "${aws_key_pair.peer.key_name}"
 
   lifecycle {
     create_before_destroy = true
+  }
+}
+# user data template for bootstraping the peer
+data "template_file" "peer_user_data" {
+  template = "${file("${path.module}/scripts/bootstrap-peer.sh")}"
+
+  vars {
+    xmx                    = "${var.transactor_xmx}"
+    java_opts              = "${var.transactor_java_opts}"
+    datomic_bucket         = "${var.transactor_deploy_bucket}"
+    datomic_version        = "${var.datomic_version}"
+    wget_user              = "${var.wget_user}"
+    wget_pass              = "${var.wget_pass}"
+    aws_region             = "${var.aws_region}"
+    transactor_role        = "${aws_iam_role.transactor.name}"
+    peer_role              = "${aws_iam_role.peer.name}"
+    memory_index_max       = "${var.transactor_memory_index_max}"
+    s3_log_bucket          = "${aws_s3_bucket.transactor_logs.id}"
+    memory_index_threshold = "${var.transactor_memory_index_threshold}"
+    cloudwatch_dimension   = "${var.system_name}"
+    object_cache_max       = "${var.transactor_object_cache_max}"
+    license-key            = "${var.datomic_license}"
+    dynamo_table           = "${aws_dynamodb_table.datomic.name}"
   }
 }
 
