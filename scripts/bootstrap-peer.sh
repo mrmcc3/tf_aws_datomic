@@ -12,4 +12,4 @@ cd  peer
 wget --http-user=$WGET_USER --http-password=$WGET_PASS https://my.datomic.com/repo/com/datomic/datomic-pro/$VERSION/datomic-pro-$VERSION.zip -O datomic-pro-$VERSION.zip
 unzip datomic-pro-$VERSION.zip
 cd datomic-pro-$VERSION
-./bin/rest -p 8080 dev "datomic:ddb://$AWS_REGION/$DYNAMO_TABLE"
+./bin/rest -p 8080 dev "datomic:ddb://$AWS_REGION/$DYNAMO_TABLE/"
