@@ -132,8 +132,8 @@ resource "aws_instance" "peer_instance" {
 }
 
 # outputs
-output "peer_instance" {
-  value = "${aws_instance.peer_instance}"
+output "peer_instance_private_ip" {
+  value = "${aws_instance.peer_instance.private_ip}"
 }
 
 output "peer_iam_role" {
