@@ -57,6 +57,22 @@ resource "aws_security_group" "ssh" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
+# security group for transactor access.
+resource "aws_security_group" "transactor" {
+  ingress {
+    from_port = 4334
+    to_port   = 4334
+    protocol  = "tcp"
+    self      = true
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
 
 # key pair for ssh access to peers
 resource "aws_key_pair" "peer" {
@@ -94,7 +110,7 @@ resource "aws_instance" "peer_instance" {
     instance_type               = "${var.peer_instance_type}"
     subnet_id                   = "${var.peer_subnet_id}"
     key_name                    = "${aws_key_pair.peer.key_name}"
-    vpc_security_group_ids      = ["${aws_security_group.ssh.id}", "${aws_security_group.datomic.id}"]
+    vpc_security_group_ids      = ["${aws_security_group.ssh.id}", "${aws_security_group.transactor.id}"]
     associate_public_ip_address = "${var.peer_public_ip}"
     monitoring                  = "${var.peer_monitoring}"
     iam_instance_profile = "${aws_iam_instance_profile.peer.name}"
