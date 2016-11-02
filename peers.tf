@@ -89,28 +89,6 @@ data "template_file" "peer_user_data" {
   }
 }
 
-# autoscaling group for launching peers
-resource "aws_autoscaling_group" "peers" {
-  availability_zones   = "${var.peer_availability_zones}"
-  name                 = "${var.system_name}_peers"
-  max_size             = "${var.peers}"
-  min_size             = "${var.peers}"
-  launch_configuration = "${aws_launch_configuration.peer.name}"
-}
-# peer launch configuration
-resource "aws_launch_configuration" "peer" {
-  name_prefix          = "${var.system_name}-peer-"
-  image_id             = "${var.peer_ami}"
-  instance_type        = "${var.peer_instance_type}"
-  iam_instance_profile = "${aws_iam_instance_profile.peer.name}"
-  security_groups      = ["${aws_security_group.ssh.name}", "${aws_security_group.datomic.name}"]
-  user_data            = "${data.template_file.peer_user_data.rendered}"
-  key_name             = "${aws_key_pair.peer.key_name}"
-
-  lifecycle {
-    create_before_destroy = true
-  }
-}
 resource "aws_instance" "peer_instance" {
     ami                         = "${var.peer_ami}"
     instance_type               = "${var.peer_instance_type}"
