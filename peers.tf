@@ -64,20 +64,7 @@ resource "aws_key_pair" "peer" {
   public_key = "${var.peer_ssh_key}"
 }
 
-# peer launch configuration
-resource "aws_launch_configuration" "peer" {
-  name_prefix          = "${var.system_name}-peer-"
-  image_id             = "${var.peer_ami}"
-  instance_type        = "${var.peer_instance_type}"
-  iam_instance_profile = "${aws_iam_instance_profile.peer.name}"
-  security_groups      = ["${aws_security_group.ssh.name}", "${aws_security_group.datomic.name}"]
-  user_data            = "${data.template_file.peer_user_data.rendered}"
-  key_name             = "${aws_key_pair.peer.key_name}"
 
-  lifecycle {
-    create_before_destroy = true
-  }
-}
 # user data template for bootstraping the peer
 data "template_file" "peer_user_data" {
   template = "${file("${path.module}/scripts/bootstrap-peer.sh")}"
@@ -110,10 +97,43 @@ resource "aws_autoscaling_group" "peers" {
   min_size             = "${var.peers}"
   launch_configuration = "${aws_launch_configuration.peer.name}"
 }
+# peer launch configuration
+resource "aws_launch_configuration" "peer" {
+  name_prefix          = "${var.system_name}-peer-"
+  image_id             = "${var.peer_ami}"
+  instance_type        = "${var.peer_instance_type}"
+  iam_instance_profile = "${aws_iam_instance_profile.peer.name}"
+  security_groups      = ["${aws_security_group.ssh.name}", "${aws_security_group.datomic.name}"]
+  user_data            = "${data.template_file.peer_user_data.rendered}"
+  key_name             = "${aws_key_pair.peer.key_name}"
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+resource "aws_instance" "peer_instance" {
+    ami                         = "${var.peer_ami}"
+    instance_type               = "${var.peer_instance_type}"
+    subnet_id                   = "${var.peer_subnet_id}"
+    key_name                    = "${aws_key_pair.peer.key_name}"
+    vpc_security_group_ids      = ["${aws_security_group.ssh.id}", "${aws_security_group.datomic.id}"]
+    associate_public_ip_address = "${var.peer_public_ip}"
+    monitoring                  = "${var.peer_monitoring}"
+    iam_instance_profile = "${aws_iam_instance_profile.peer.name}"
+    user_data            = "${data.template_file.peer_user_data.rendered}"
+
+    tags {
+        Environment = "${var.system_name}"
+        Role = "Datomic Peer"
+        Name = "${var.system_name} - Peer"
+
+
+    }
+}
 
 # outputs
-output "peer_autoscaling_group" {
-  value = "${aws_autoscaling_group.peers.name}"
+output "peer_instance" {
+  value = "${aws_instance.peer_instance}"
 }
 
 output "peer_iam_role" {
