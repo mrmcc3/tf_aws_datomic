@@ -23,9 +23,24 @@ variable "peer_availability_zones" {
 variable "peer_instance_type" {
   default = "t2.small"
 }
+variable "peer_subnet_id" {
+  
+}
+variable "peer_public_ip" {
+  default = false
+}
+variable "peer_monitoring" {
+  default = false
+}
 
 variable "peers" {
   default = "1"
+}
+variable "wget_user" {
+
+}
+variable "wget_pass" {
+
 }
 
 variable "transactor_availability_zones" {
